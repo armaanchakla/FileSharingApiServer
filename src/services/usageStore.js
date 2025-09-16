@@ -10,7 +10,9 @@ const usagePath = path.join(
   process.env.USAGE_STORE_FILE || ".usagestore.json"
 );
 
-let store = { date: new Date().toISOString().slice(0, 10), clients: {} };
+const today = new Date().toISOString().slice(0, 10);
+
+let store = { date: today, clients: {} };
 
 function getUsage(ip) {
   resetIfNeeded();
@@ -35,8 +37,6 @@ async function addUsage(ip, type, bytes) {
 }
 
 function resetIfNeeded() {
-  const today = new Date().toISOString().slice(0, 10);
-
   if (store.date !== today) {
     store = { date: today, clients: {} };
     saveStore();

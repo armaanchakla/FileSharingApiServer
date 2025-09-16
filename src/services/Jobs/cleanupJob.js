@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { existsSync } from "fs";
-import LocalStorage from "./storageProviders/localStorage.js";
+import LocalStorage from "../storageProviders/localStorage.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -9,8 +9,8 @@ const directory = path.join(process.cwd(), process.env.FOLDER || "uploads");
 
 const storage = new LocalStorage(directory);
 
-const inactivityTime = parseInt(process.env.FILE_INACTIVITY_TIME || "10", 10);
-const intervalMs = parseInt(process.env.CLEANUP_INTERVAL_MS || "3000", 10);
+const inactivityTime = parseInt(process.env.FILE_INACTIVITY_TIME || "60", 10);
+const interval = parseInt(process.env.CLEANUP_INTERVAL || "10000", 10);
 
 function nonModifiedTime(seconds) {
   return new Date(Date.now() - seconds * 1000).toISOString();
@@ -19,7 +19,9 @@ function nonModifiedTime(seconds) {
 async function cleanup() {
   try {
     console.log(
-      `[CleanupJob] Running cleanup for files not modified in the last ${inactivityTime} seconds.`
+      `[CleanupJob] Cleanup runs every ${
+        interval / 1000
+      }s, for files inactive over ${inactivityTime}s.`
     );
 
     const files = await storage.listFiles();
@@ -64,8 +66,8 @@ async function updateMetadata(keyToDelete) {
 }
 
 function startCleanupJob() {
-  console.log(`[CleanupJob] Scheduled for every ${intervalMs / 1000}s`);
-  setInterval(cleanup, intervalMs);
+  console.log(`[CleanupJob] Started.`);
+  setInterval(cleanup, interval);
 }
 
 export default startCleanupJob;

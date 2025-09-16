@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import http from "http";
 import app from "./app.js";
-import startCleanupJob from "./services/cleanupJob.js";
+import startCleanupJob from "./services/Jobs/cleanupJob.js";
 
 dotenv.config();
 

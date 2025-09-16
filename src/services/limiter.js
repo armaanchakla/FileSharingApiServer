@@ -10,14 +10,13 @@ const downloadLimit = parseInt(
 );
 
 const limiter = {
+  // upload limit checker
   async uploadLimitMiddleware(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress;
     const usage = usageStore.getUsage(ip);
     const contentLength = req.headers["content-length"]
       ? parseInt(req.headers["content-length"], 10)
       : 0;
-
-    // console.log(contentLength, usage.uploaded, uploadLimit);
 
     if (usage.uploaded + contentLength > uploadLimit) {
       return res
@@ -28,6 +27,7 @@ const limiter = {
     next();
   },
 
+  // download limit checker
   async downloadLimitMiddleware(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress;
     const usage = usageStore.getUsage(ip);
@@ -52,6 +52,7 @@ const limiter = {
     next();
   },
 
+  // update upload limit
   async recordUpload(ip, bytes) {
     await usageStore.addUsage(ip, "upload", bytes);
   },
