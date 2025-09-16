@@ -1,5 +1,5 @@
 # custom
-uploads/.metadata.json
+/uploads/.*
 
 # Logs
 logs
