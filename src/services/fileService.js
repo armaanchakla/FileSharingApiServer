@@ -8,17 +8,10 @@ class FileService {
   constructor() {
     dotenv.config();
 
-    const projectRoot = process.cwd();
-    const folderDir = process.env.FOLDER;
-
-    if (!folderDir) {
-      throw new Error("FOLDER environment variable is not set.");
-    }
-
-    const directory = path.join(projectRoot, process.env.FOLDER);
+    const directory = path.join(process.cwd(), process.env.FOLDER);
 
     this.storage = new LocalStorage(directory);
-    this.metaFile = path.join(directory, ".metadata.json");
+    this.metaFile = path.join(directory, process.env.META_DATA_FILE);
     this.meta = {};
 
     // load existing metadata

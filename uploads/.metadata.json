@@ -1,1 +1,20 @@
-{}
+{
+  "759e7a1c-b625-4d52-9ea0-5e7fd80a8c22": {
+    "privateKey": "dfc45994-ceff-470b-9ef0-8537cd2cd75a",
+    "path": "D:\\laragon\\www\\FileSharingApiServer\\uploads\\files\\759e7a1c-b625-4d52-9ea0-5e7fd80a8c22",
+    "mimetype": "application/pdf",
+    "originalName": "Sample2MB.pdf",
+    "size": 2208728,
+    "uploadedAt": "2025-09-16T12:35:50.842Z",
+    "lastAccess": "2025-09-16T12:35:50.842Z"
+  },
+  "c5f3b6d1-7a8c-4fc2-8318-c965617f2ba1": {
+    "privateKey": "b73a401e-7bea-4649-923d-f22f542faa00",
+    "path": "D:\\laragon\\www\\FileSharingApiServer\\uploads\\files\\c5f3b6d1-7a8c-4fc2-8318-c965617f2ba1",
+    "mimetype": "application/pdf",
+    "originalName": "Sample2MB.pdf",
+    "size": 2208728,
+    "uploadedAt": "2025-09-16T12:35:52.001Z",
+    "lastAccess": "2025-09-16T12:38:23.142Z"
+  }
+}
