@@ -11,8 +11,9 @@ const fileService = new FileService();
 // root
 app.get("/", (req, res) => {
   try {
-    res.sendFile("views/index.html", { root: import.meta.dirname });
+    res.sendFile("views/index.html", { root: process.cwd() });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -20,9 +21,8 @@ app.get("/", (req, res) => {
 // upload
 app.post("/files", upload.single("file"), async (req, res) => {
   try {
-    if (!req.file) {
+    if (!req.file)
       return res.status(400).json({ error: "Please upload a file." });
-    }
 
     const result = await fileService.saveFile(
       req.file.buffer,
@@ -32,6 +32,7 @@ app.post("/files", upload.single("file"), async (req, res) => {
 
     res.json({ publicKey: result.publicKey, privateKey: result.privateKey });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -40,10 +41,20 @@ app.post("/files", upload.single("file"), async (req, res) => {
 app.get("/files/:publicKey", async (req, res) => {
   try {
     const { publicKey } = req.params;
-    console.log(req);
-    console.log(publicKey);
 
-    res.json({ message: "file downloaded!" });
+    if (!publicKey) return res.status(400).json({ error: "Missing publicKey" });
+
+    const file = await fileService.getFile(publicKey);
+
+    if (!file) return res.status(404).json({ error: "File not found" });
+
+    res.setHeader("Content-Type", file.mimetype || "application/octet-stream");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${file.originalName || "file"}"`
+    );
+
+    res.send(file.buffer);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -54,10 +65,16 @@ app.get("/files/:publicKey", async (req, res) => {
 app.delete("/files/:privateKey", async (req, res) => {
   try {
     const { privateKey } = req.params;
-    console.log(req);
-    console.log(privateKey);
 
-    res.json({ message: "file deleted!" });
+    if (!privateKey)
+      return res.status(400).json({ error: "Missing privateKey" });
+
+    const isDeleted = await fileService.deleteFile(privateKey);
+
+    if (!isDeleted)
+      return res.status(404).json({ error: "File not found or wrong key" });
+
+    res.json({ success: true, message: "File deleted" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
