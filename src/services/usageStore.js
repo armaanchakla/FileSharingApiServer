@@ -4,8 +4,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const directory = path.join(process.cwd(), process.env.FOLDER);
-const usagePath = path.join(directory, process.env.USAGE_STORE_FILE);
+const directory = path.join(process.cwd(), process.env.FOLDER || "uploads");
+const usagePath = path.join(
+  directory,
+  process.env.USAGE_STORE_FILE || ".usagestore.json"
+);
 
 let store = { date: new Date().toISOString().slice(0, 10), clients: {} };
 

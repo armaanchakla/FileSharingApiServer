@@ -1,7 +1,13 @@
 import usageStore from "./usageStore.js";
 
-const uploadLimit = parseInt(process.env.UPLOAD_LIMIT_BYTES_PER_DAY, 10);
-const downloadLimit = parseInt(process.env.DOWNLOAD_LIMIT_BYTES_PER_DAY, 10);
+const uploadLimit = parseInt(
+  process.env.UPLOAD_LIMIT_BYTES_PER_DAY || 5242880,
+  10
+);
+const downloadLimit = parseInt(
+  process.env.DOWNLOAD_LIMIT_BYTES_PER_DAY || 5242880,
+  10
+);
 
 const limiter = {
   async uploadLimitMiddleware(req, res, next) {

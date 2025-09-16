@@ -5,6 +5,7 @@ import { existsSync } from "fs";
 class LocalStorage {
   constructor(directory) {
     this.directory = directory;
+    this.metaDir = path.join(directory, "files");
 
     if (!existsSync(directory)) {
       fs.mkdir(directory, { recursive: true }).catch((e) => {
@@ -45,6 +46,22 @@ class LocalStorage {
       await fs.unlink(filepath);
     } catch (e) {
       console.error("Failed to delete file: ", e);
+    }
+  }
+
+  async listFiles() {
+    try {
+      const metaPath = path.join(
+        this.directory,
+        process.env.META_DATA_FILE || ".metadata.json"
+      );
+      const txt = await fs.readFile(metaPath, "utf8");
+      const data = JSON.parse(txt);
+
+      return Object.values(data);
+    } catch (e) {
+      console.error("Failed to list files:", e);
+      return [];
     }
   }
 }

@@ -8,10 +8,13 @@ class FileService {
   constructor() {
     dotenv.config();
 
-    const directory = path.join(process.cwd(), process.env.FOLDER);
+    const directory = path.join(process.cwd(), process.env.FOLDER || "uploads");
 
     this.storage = new LocalStorage(directory);
-    this.metaFile = path.join(directory, process.env.META_DATA_FILE);
+    this.metaFile = path.join(
+      directory,
+      process.env.META_DATA_FILE || ".metadata.json"
+    );
     this.meta = {};
 
     // load existing metadata
@@ -25,6 +28,7 @@ class FileService {
     const saved = await this.storage.saveFileBuffer(publicKey, buffer);
 
     this.meta[publicKey] = {
+      publicKey,
       privateKey,
       path: saved.path,
       mimetype: mimetype,
