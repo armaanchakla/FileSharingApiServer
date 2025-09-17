@@ -31,7 +31,13 @@ class FileService {
     }
 
     // load existing metadata after storage initialization
-    await this.loadMeta();
+    await fs.mkdir(
+      path.dirname(this.metaFile),
+      { recursive: true },
+      (err, data) => {
+        this.loadMeta();
+      }
+    );
   }
 
   async saveFile(buffer, originalName, mimetype) {
@@ -60,7 +66,6 @@ class FileService {
 
   async saveMeta() {
     try {
-      await fs.mkdir(path.dirname(this.metaFile), { recursive: true });
       await fs.writeFile(
         this.metaFile,
         JSON.stringify(this.meta, null, 2),

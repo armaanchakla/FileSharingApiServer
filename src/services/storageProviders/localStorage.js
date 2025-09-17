@@ -55,6 +55,11 @@ class LocalStorage {
         this.directory,
         process.env.META_DATA_FILE || ".metadata.json"
       );
+
+      if (!existsSync(metaPath)) {
+        await fs.mkdir(metaPath, { recursive: true });
+      }
+
       const txt = await fs.readFile(metaPath, "utf8");
       const data = JSON.parse(txt);
 
