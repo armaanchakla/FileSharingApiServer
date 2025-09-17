@@ -3,22 +3,35 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs/promises";
 import LocalStorage from "./storageProviders/localStorage.js";
+import GoogleStorage from "./storageProviders/googleStorage.js";
 
 class FileService {
   constructor() {
     dotenv.config();
 
-    const directory = path.join(process.cwd(), process.env.FOLDER || "uploads");
+    this.directory = path.join(process.cwd(), process.env.FOLDER || "uploads");
 
-    this.storage = new LocalStorage(directory);
+    this.storage = null; // initially
+
     this.metaFile = path.join(
-      directory,
+      this.directory,
       process.env.META_DATA_FILE || ".metadata.json"
     );
     this.meta = {};
+  }
 
-    // load existing metadata
-    this.loadMeta();
+  async init() {
+    if (process.env.PROVIDER === "google") {
+      const configPath = process.env.CONFIG || "google-config.json";
+      const configData = await fs.readFile(configPath, "utf8");
+      const configJson = JSON.parse(configData);
+      this.storage = new GoogleStorage(configJson);
+    } else {
+      this.storage = new LocalStorage(this.directory);
+    }
+
+    // load existing metadata after storage initialization
+    await this.loadMeta();
   }
 
   async saveFile(buffer, originalName, mimetype) {

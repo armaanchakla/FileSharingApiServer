@@ -8,6 +8,7 @@ app.use(express.json());
 
 const upload = multer({ storage: multer.memoryStorage() });
 const fileService = new FileService();
+await fileService.init();
 
 // root
 app.get("/", (req, res) => {
